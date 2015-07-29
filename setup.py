@@ -47,6 +47,7 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Framework :: Django',
+        'Framework :: Django :: 1.8',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
