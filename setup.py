@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+__version__ = '0.1.0'
+
 import os
 import sys
-
-import spam
 
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
-version = spam.__version__
+version = "0.1.0"
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
