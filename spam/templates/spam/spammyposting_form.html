@@ -1,0 +1,21 @@
+{% extends "spam/base.html" %}
+
+{% block content %}
+<h2>Reporting Potential Spam</h2>
+
+<p>
+  <strong>Content Type:</strong>
+  {{ model_class.meta.model_name.title }}
+</p>
+<p>
+  <strong>Content Location:</strong>
+  <a href="{{ instance.get_absolute_url }}">{{ instance }}</a>
+</p>
+
+<form action="." method="post">
+{{ form.as_p }}
+
+
+</form>
+
+{% endblock %}
