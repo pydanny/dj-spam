@@ -1,10 +1,10 @@
 from django.apps import apps
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import (
     CreateView,
-    ListView,
+    TemplateView,
 )
 
 from .models import SpammyPosting
@@ -21,6 +21,7 @@ class ReportSpamCreateView(CreateView):
     """
     model = SpammyPosting
     fields = ['comment',]
+    success_url = reverse_lazy('spam:thanks')
 
     def get_spammable_or_404(self, app, model, pk):
         # Does this have the is_spammable mixin?
@@ -50,8 +51,8 @@ class ReportSpamCreateView(CreateView):
         return super(ReportSpamCreateView, self).form_valid(form)
 
 
-class ReportSpamListView(ListView):
-    model = SpammyPosting
+class ThankYouView(TemplateView):
+    template_name = "spam/thanks.html"
 
 
 class SpammableMixin(object):

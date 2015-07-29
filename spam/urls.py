@@ -4,8 +4,8 @@ from . import views
 urlpatterns = (
     url(
         regex=r'^$',
-        view=views.ReportSpamListView.as_view(),
-        name='list'
+        view=views.ThankYouView.as_view(),
+        name='thanks'
     ),
     url(
         r'^(?P<app>[\w\-]+)/(?P<model>[\w\-]+)/(?P<pk>\d+)/$',
