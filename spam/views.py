@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import (
@@ -7,7 +8,11 @@ from django.views.generic import (
 )
 
 from .models import SpammyPosting
-from .utils import list_spammables, is_spammable
+from .utils import (
+    spammables,
+    is_spammable,
+    get_app_name
+)
 
 
 class ReportSpamCreateView(CreateView):
@@ -47,3 +52,12 @@ class ReportSpamCreateView(CreateView):
 
 class ReportSpamListView(ListView):
     model = SpammyPosting
+
+
+class SpammableMixin(object):
+    def spam_report_url(self):
+        return reverse('spam:report', kwargs={
+            'app': get_app_name(self.object),
+            'model': self.object._meta.object_name,
+            'pk': self.object.pk
+        })

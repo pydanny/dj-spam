@@ -3,8 +3,6 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from .utils import list_spammables
-
 
 class SpammyPosting(models.Model):
 
@@ -24,18 +22,8 @@ class SpammyPosting(models.Model):
     status = models.IntegerField(choices=STATUS, default=FLAGGED)
     reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='reviewer')
     comment = models.TextField(blank=True, null=True)
-
-
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-
-class Spammable(models.Model):
-
-    spam_flag = models.ManyToManyField(SpammyPosting,
-        blank=True,
-        null=True
-    )
-
     class Meta:
-        abstract = True
+        app_label = 'spam'
