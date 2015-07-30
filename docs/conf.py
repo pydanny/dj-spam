@@ -22,7 +22,7 @@ cwd = os.getcwd()
 parent = os.path.dirname(cwd)
 sys.path.append(parent)
 
-__version__ = 0.1.0
+__version__ = 0.2.0
 
 # -- General configuration -----------------------------------------------------
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__version__ = '0.1.0'
-
 import os
 import sys
 
@@ -11,7 +9,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-version = "0.1.0"
+version = "0.2.0"
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
