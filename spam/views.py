@@ -57,7 +57,7 @@ class ThankYouView(TemplateView):
 
 class SpammableMixin(object):
     def spam_report_url(self):
-        return reverse('spam:report', kwargs={
+        return reverse_lazy('spam:report', kwargs={
             'app': get_app_name(self.object),
             'model': self.object._meta.object_name,
             'pk': self.object.pk

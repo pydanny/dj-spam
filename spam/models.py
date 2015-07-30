@@ -27,3 +27,6 @@ class SpammyPosting(models.Model):
 
     class Meta:
         app_label = 'spam'
+
+    def __str__(self):
+        return self.get_status_display()

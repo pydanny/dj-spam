@@ -13,11 +13,9 @@ def spammables():
         flaggables.append(model)
     return flaggables
 
-
 def is_spammable(app, model):
     model_class = apps.get_model("{}.{}".format(app, model))
     return model_class in spammables()
-
 
 def get_app_name(model_class_or_instance):
     return model_class_or_instance._meta.app_config.name.split('.')[-1]
