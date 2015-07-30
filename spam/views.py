@@ -1,7 +1,10 @@
 from django.apps import apps
+from django.conf import settings
+from django.core.mail import mail_managers
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from django.views.generic import (
     CreateView,
     TemplateView,
@@ -14,6 +17,9 @@ from .utils import (
     get_app_name
 )
 
+# MANAGERS is a list of tuples following the same pattern as settings.ADMINS
+MANAGERS = getattr(settings, "MANAGERS", settings.ADMINS)
+
 
 class ReportSpamCreateView(CreateView):
     """
@@ -23,7 +29,9 @@ class ReportSpamCreateView(CreateView):
     fields = ['comment',]
     success_url = reverse_lazy('spam:thanks')
 
-    def get_spammable_or_404(self, app, model, pk):
+    def get_spammable_or_404(self, app=None, model=None, pk=None):
+        if app is None and model is None and pk is None:
+            app, model, pk = self.kwargs['app'], self.kwargs['model'], self.kwargs['pk']
         # Does this have the is_spammable mixin?
         if is_spammable(app, model):
             # convert app/model into the actual model class
@@ -34,20 +42,27 @@ class ReportSpamCreateView(CreateView):
             return model_class, instance
         raise Http404
 
-
     def get_context_data(self, **kwargs):
         context = super(ReportSpamCreateView, self).get_context_data(**kwargs)
-        app, model, pk = self.kwargs['app'], self.kwargs['model'], self.kwargs['pk']
-        model_class, instance = self.get_spammable_or_404(app, model, pk)
+        model_class, instance = self.get_spammable_or_404()
         context['model_class'] = model_class
         context['instance'] = instance
         return context
 
     def form_valid(self, form):
-        spam = form.save(commit=False)
-        spam.reporter = self.request.user
-        spam.save()
-        self.app, model, pk = self.kwargs['app'], self.kwargs['model'], self.kwargs['pk']
+        model_class, instance = self.get_spammable_or_404()
+        with transaction.atomic():
+            spam = form.save(commit=False)
+            spam.reporter = self.request.user
+            spam.save()
+            # Add the spam to the flagged instance of content
+            instance.spam_flag.add(spam)
+        mail_managers(
+            # TODO: Ability to specify site name
+            "Spam flagged on your site",
+            # TODO: Put this in a template so it can be easily customized
+            "Content was flagged as being spammy. You should go and check it out."
+        )
         return super(ReportSpamCreateView, self).form_valid(form)
 
 

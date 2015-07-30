@@ -75,3 +75,14 @@ This empowers you with the view method ``spam_report_url`` which you can use to
 define the URL to the reporting form::
 
     <a href="{{ view.spam_report_url }}">Report Spam</a>
+
+admin
+------
+
+dj-spam comes with a simple admin view.
+
+emailing managers
+-------------------
+
+dj-spam emails `settings.MANAGERS` every time something is flagged. If you don't
+set `settings.MANAGERS`, it will email `settings.ADMINS`.

@@ -11,6 +11,7 @@ class SpammyPostingAdmin(admin.ModelAdmin):
     readonly_fields = ('source', 'created', 'modified',)
 
     def source(self, instance):
+        """This links directly to the location of the offending content."""
 
         for spammable in spammables():
             try:
