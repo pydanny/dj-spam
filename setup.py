@@ -38,6 +38,8 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
+        'django>=1.8.0',
+        'wheel>=0.24.0'
     ],
     license="BSD",
     zip_safe=False,
