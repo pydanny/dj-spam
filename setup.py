@@ -57,4 +57,13 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ],
+    test_suite='tests',
+    tests_require=[
+        "django>=1.8.0",
+        "coverage",
+        "coveralls",
+        "mock>=1.0.1",
+        "flake8>=2.1.0",
+        "tox>=1.7.0"
+    ]
 )
