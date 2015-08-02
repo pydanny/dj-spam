@@ -17,8 +17,10 @@ User = get_user_model()
 
 
 class TestGetAppName(TestCase):
+    """ Tests the `get_app_name()` utility. """
 
     def test_model_class(self):
+        """ Tests `get_app_name()` with a model class as the argument. """
         app_name = get_app_name(User)
         self.assertEqual(
             app_name,
@@ -26,6 +28,7 @@ class TestGetAppName(TestCase):
         )
 
     def test_instance(self):
+        """ Tests `get_app_name()` with a model instance as the argument. """
         user = User.objects.create(
             username='test',
             email='test@example.com',

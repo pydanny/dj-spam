@@ -18,6 +18,7 @@ from spam.models import SpammyPosting
 
 
 class TestSpammyPosting(TestCase):
+    """ Tests for SpammyPosting model. """
 
     def setUp(self):
         self.user = self.make_user()
@@ -29,4 +30,5 @@ class TestSpammyPosting(TestCase):
         )
 
     def test_str(self):
+        """ Test the `__str__()` method of SpammyPosting  """
         self.assertEqual(self.spammy_posting.__str__(), "Flagged")
