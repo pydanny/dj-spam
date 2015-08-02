@@ -64,6 +64,7 @@ setup(
         "coveralls",
         "mock>=1.0.1",
         "flake8>=2.1.0",
-        "tox>=1.7.0"
+        "tox>=1.7.0",
+        "django-test-plus>=1.0.7"
     ]
 )
