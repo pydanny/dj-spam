@@ -10,18 +10,23 @@ Tests for `dj-spam` models module.
 
 import os
 import shutil
-import unittest
+from test_plus.test import TestCase
 
-from spam import models
+from django.conf import settings
+
+from spam.models import SpammyPosting
 
 
-class TestSpam(unittest.TestCase):
+class TestSpammyPosting(TestCase):
 
     def setUp(self):
-        pass
+        self.user = self.make_user()
+        self.spammy_posting = SpammyPosting.objects.create(
+            reporter=self.user,
+            status=SpammyPosting.FLAGGED,
+            reviewer=self.user,
+            comment="Includes too many links"
+        )
 
-    def test_something(self):
-        pass
-
-    def tearDown(self):
-        pass
+    def test_str(self):
+        self.assertEqual(self.spammy_posting.__str__(), "Flagged")
