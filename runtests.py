@@ -12,11 +12,12 @@ try:
                 "ENGINE": "django.db.backends.sqlite3",
             }
         },
-        ROOT_URLCONF="spam.urls",
+        ROOT_URLCONF="test_app.urls",
         INSTALLED_APPS=[
             "django.contrib.auth",
             "django.contrib.contenttypes",
             "django.contrib.sites",
+            "test_app",
             "spam",
         ],
         SITE_ID=1,

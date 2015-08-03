@@ -39,3 +39,5 @@ class TestGetAppName(TestCase):
             app_name,
             'auth'  # django.contrib.auth
         )
+
+    
