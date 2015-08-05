@@ -8,7 +8,7 @@ urlpatterns = (
         name='thanks'
     ),
     url(
-        r'^(?P<app>[\w\-]+)/(?P<model>[\w\-]+)/(?P<pk>\d+)/$',
+        r'^report/(?P<slug>\w+)/$',
         view=views.ReportSpamCreateView.as_view(),
         name='report'
     ),

@@ -1,3 +1,6 @@
+from binascii import Error as BinaryError
+from base64 import b16encode, b16decode
+
 from django.apps import apps
 from django.conf import settings
 from django.core.mail import mail_managers
@@ -21,7 +24,7 @@ from .utils import (
 MANAGERS = getattr(settings, "MANAGERS", settings.ADMINS)
 
 
-class ReportSpamCreateView(CreateView):
+class ReportSpamCreateView(TemplateView):
     """
     Requires 'model' as an argument
     """
@@ -29,9 +32,19 @@ class ReportSpamCreateView(CreateView):
     fields = ['comment',]
     success_url = reverse_lazy('spam:thanks')
 
+    def b16_slug_to_arguments(self, b16_slug):
+        try:
+            url = b16decode(b16_slug.decode('utf-8'))
+        except BinaryError:
+            raise Http404
+        app, model, pk = slug.split('/')
+        return app, model, pk
+
     def get_spammable_or_404(self, app=None, model=None, pk=None):
         if app is None and model is None and pk is None:
-            app, model, pk = self.kwargs['app'], self.kwargs['model'], self.kwargs['pk']
+            import ipdb; ipdb.set_trace()
+            
+            app, model, pk = self.b16_slug_to_arguments(self.kwargs['slug'])
         # Does this have the is_spammable mixin?
         if is_spammable(app, model):
             # convert app/model into the actual model class
@@ -44,6 +57,7 @@ class ReportSpamCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ReportSpamCreateView, self).get_context_data(**kwargs)
+
         model_class, instance = self.get_spammable_or_404()
         context['model_class'] = model_class
         context['instance'] = instance
@@ -72,8 +86,12 @@ class ThankYouView(TemplateView):
 
 class SpammableMixin(object):
     def spam_report_url(self):
-        return reverse_lazy('spam:report', kwargs={
-            'app': get_app_name(self.object),
-            'model': self.object._meta.object_name,
-            'pk': self.object.pk
-        })
+        slug = "{app}/{model}/{pk}/".format(
+            app = get_app_name(self.object),
+            model = self.object._meta.object_name,
+            pk = self.object.pk
+        )
+        # We're just hashing so users won't readily get a sense of how we
+        # architected our project
+        b16_slug = b16encode(slug.encode('utf-8'))
+        return reverse_lazy('spam:report', kwargs={'b16_slug': b16_slug})
