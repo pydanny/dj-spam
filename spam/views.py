@@ -24,7 +24,7 @@ from .utils import (
 MANAGERS = getattr(settings, "MANAGERS", settings.ADMINS)
 
 
-class ReportSpamCreateView(TemplateView):
+class ReportSpamCreateView(CreateView):
     """
     Requires 'model' as an argument
     """
@@ -34,16 +34,15 @@ class ReportSpamCreateView(TemplateView):
 
     def b16_slug_to_arguments(self, b16_slug):
         try:
-            url = b16decode(b16_slug.decode('utf-8'))
+            slug = b16decode(b16_slug.decode('utf-8'))
         except BinaryError:
             raise Http404
-        app, model, pk = slug.split('/')
+
+        app, model, pk = slug.decode('utf-8').split('/')[0:3]
         return app, model, pk
 
     def get_spammable_or_404(self, app=None, model=None, pk=None):
         if app is None and model is None and pk is None:
-            import ipdb; ipdb.set_trace()
-            
             app, model, pk = self.b16_slug_to_arguments(self.kwargs['slug'])
         # Does this have the is_spammable mixin?
         if is_spammable(app, model):

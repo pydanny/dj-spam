@@ -20,24 +20,20 @@ class TestReportSpamCreateView(TestCase):
     def test_data_detail_view(self):
         """ Just to make certain we have the tests wired up right"""
         # Get the URL
-        url = reverse('data', kwargs={'pk': self.data.pk})
         # Create a request
-        request = self.factory.get(url)
+        request = self.factory.get('/fake-url')
         # Generate a response
-        view = DataDetailView.as_view()(request)
-        response = view(request)
+        response = DataDetailView.as_view()(request, pk=self.data.pk)
 
         # Check to see if we had a 404 or not
         self.response_200(response)
 
     def test_slug_to_arguments(self):
-        base_url = "test_app/data/15/"
+        base_url = "test_app/data/{0}/".format(self.data.pk)
         b16_slug = b16encode(base_url.encode('utf-8'))
-        url = reverse('spam:report', kwargs={'slug': b16_slug})
 
-
-        request = self.factory.get(url)
-        import ipdb; ipdb.set_trace()
+        request = self.factory.get('/fake-url')
 
         view = ReportSpamCreateView.as_view()
-        response = view(request)
+        response = view(request, slug=b16_slug)
+        self.response_200(response)
