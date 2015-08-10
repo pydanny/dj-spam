@@ -1,5 +1,5 @@
 from binascii import Error as BinaryError
-from base64 import b16encode, b16decode
+from base64 import b16encode
 
 from django.apps import apps
 from django.conf import settings
@@ -13,11 +13,13 @@ from django.views.generic import (
     TemplateView,
 )
 
+from .exceptions import B16DecodingFail
 from .models import SpammyPosting
 from .utils import (
     spammables,
     is_spammable,
-    get_app_name
+    get_app_name,
+    b16_slug_to_arguments
 )
 
 # MANAGERS is a list of tuples following the same pattern as settings.ADMINS
@@ -32,18 +34,12 @@ class ReportSpamCreateView(CreateView):
     fields = ['comment',]
     success_url = reverse_lazy('spam:thanks')
 
-    def b16_slug_to_arguments(self, b16_slug):
-        try:
-            slug = b16decode(b16_slug.decode('utf-8'))
-        except BinaryError:
-            raise Http404
-
-        app, model, pk = slug.decode('utf-8').split('/')[0:3]
-        return app, model, pk
-
     def get_spammable_or_404(self, app=None, model=None, pk=None):
         if app is None and model is None and pk is None:
-            app, model, pk = self.b16_slug_to_arguments(self.kwargs['slug'])
+            try:
+                app, model, pk = b16_slug_to_arguments(self.kwargs['slug'])
+            except B16DecodingFail:
+                raise Http404
         # Does this have the is_spammable mixin?
         if is_spammable(app, model):
             # convert app/model into the actual model class

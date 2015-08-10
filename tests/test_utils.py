@@ -5,13 +5,18 @@
 test_dj-spam
 ------------
 
-Tests for `dj-spam` models module.
+Tests for `dj-spam` utils module.
 """
+from base64 import b16encode
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from spam.utils import get_app_name
+from spam.exceptions import B16DecodingFail
+from spam.utils import (
+    get_app_name,
+    b16_slug_to_arguments
+)
 
 User = get_user_model()
 
@@ -40,4 +45,24 @@ class TestGetAppName(TestCase):
             'auth'  # django.contrib.auth
         )
 
-    
+
+class TestB16SlugToArguments(TestCase):
+
+    def setUp(self):
+        self.slug = b16encode('myapp/myproject/35'.encode('utf-8'))
+        self.bad_slug = 'ABCDEFGHIJKLMNOP'.encode('utf-8')
+        self.bad_slug_type = 'IAMSPAM'
+
+    def test_b16_slug_to_arguments(self):
+        self.assertEqual(
+            ('myapp', 'myproject', '35'),
+            b16_slug_to_arguments(self.slug)
+        )
+
+    def test_bad_slug(self):
+        with self.assertRaises(B16DecodingFail):
+            b16_slug_to_arguments(self.bad_slug)
+
+    def test_bad_slug_type(self):
+        with self.assertRaises(AttributeError):
+            b16_slug_to_arguments(self.bad_slug_type)
