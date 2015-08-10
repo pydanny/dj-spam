@@ -1,10 +1,9 @@
 from binascii import Error as BinaryError
 from base64 import b16encode, b16decode
 
-import six
-
 from django.apps import apps
 from django.core.exceptions import FieldDoesNotExist
+from django.utils import six
 
 from .exceptions import B16DecodingFail
 
