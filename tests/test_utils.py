@@ -50,7 +50,7 @@ class TestB16SlugToArguments(TestCase):
 
     def setUp(self):
         self.slug = b16encode('myapp/myproject/35'.encode('utf-8'))
-        self.bad_slug = 'ABCDEFGHIJKLMNOP'.encode('utf-8')
+        self.bad_slug = 'ABCDEF'.encode('utf-8')
         self.bad_slug_type = 'IAMSPAM'
 
     def test_b16_slug_to_arguments(self):
@@ -64,5 +64,5 @@ class TestB16SlugToArguments(TestCase):
             b16_slug_to_arguments(self.bad_slug)
 
     def test_bad_slug_type(self):
-        with self.assertRaises(AttributeError):
+        with self.assertRaises(B16DecodingFail):
             b16_slug_to_arguments(self.bad_slug_type)

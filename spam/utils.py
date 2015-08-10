@@ -36,8 +36,13 @@ def b16_slug_to_arguments(b16_slug):
         url = b16decode(b16_slug.decode('utf-8'))
     except BinaryError:
         raise B16DecodingFail
+    except TypeError:
+        raise B16DecodingFail('Non-base16 digit found')
     except AttributeError:
-        raise AttributeError("b16_slug must have a 'decode' method.")
+        raise B16DecodingFail("b16_slug must have a 'decode' method.")
 
-    app, model, pk = url.decode('utf-8').split('/')[0:3]
+    try:
+        app, model, pk = url.decode('utf-8').split('/')[0:3]
+    except UnicodeDecodeError:
+        raise B16DecodingFail("Invalid b16_slug passed")
     return app, model, pk
