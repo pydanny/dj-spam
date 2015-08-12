@@ -19,7 +19,8 @@ from .utils import (
     spammables,
     is_spammable,
     get_app_name,
-    b16_slug_to_arguments
+    b16_slug_to_arguments,
+    get_spammable_or_404
 )
 
 # MANAGERS is a list of tuples following the same pattern as settings.ADMINS
@@ -34,32 +35,24 @@ class ReportSpamCreateView(CreateView):
     fields = ['comment',]
     success_url = reverse_lazy('spam:thanks')
 
-    def get_spammable_or_404(self, app=None, model=None, pk=None):
-        if app is None and model is None and pk is None:
-            try:
-                app, model, pk = b16_slug_to_arguments(self.kwargs['slug'])
-            except B16DecodingFail:
-                raise Http404
-        # Does this have the is_spammable mixin?
-        if is_spammable(app, model):
-            # convert app/model into the actual model class
-            model_class = apps.get_model(app, model)
-            # So we can call meta for details in the template
-            model_class.meta = model_class._meta
-            instance = get_object_or_404(model_class, pk=pk)
-            return model_class, instance
-        raise Http404
+    def b16_slug_to_arguments(self):
+        """Returns app, model, pk"""
+        try:
+            return b16_slug_to_arguments(self.kwargs['slug'])
+        except B16DecodingFail:
+            raise Http404
 
     def get_context_data(self, **kwargs):
         context = super(ReportSpamCreateView, self).get_context_data(**kwargs)
-
-        model_class, instance = self.get_spammable_or_404()
+        app, model, pk = self.b16_slug_to_arguments()
+        model_class, instance = get_spammable_or_404(app, model, pk)
         context['model_class'] = model_class
         context['instance'] = instance
         return context
 
     def form_valid(self, form):
-        model_class, instance = self.get_spammable_or_404()
+        app, model, pk = self.b16_slug_to_arguments()
+        model_class, instance = get_spammable_or_404(app, model, pk)
         with transaction.atomic():
             spam = form.save(commit=False)
             spam.reporter = self.request.user

@@ -15,8 +15,11 @@ from django.test import TestCase
 from spam.exceptions import B16DecodingFail
 from spam.utils import (
     get_app_name,
-    b16_slug_to_arguments
+    b16_slug_to_arguments,
+    get_spammable_or_404
 )
+
+from test_app.models import Data
 
 User = get_user_model()
 
@@ -66,3 +69,18 @@ class TestB16SlugToArguments(TestCase):
     def test_bad_slug_type(self):
         with self.assertRaises(B16DecodingFail):
             b16_slug_to_arguments(self.bad_slug_type)
+
+
+class TestGetSpammableOr404(TestCase):
+
+    def setUp(self):
+        self.data = Data.objects.create(title='test')
+
+    def test_get_spammable(self):
+        model_class, instance = get_spammable_or_404(
+            'test_app',
+            'Data',
+            self.data.pk
+        )
+        self.assertEqual(model_class, Data)
+        self.assertIsInstance(instance, Data)

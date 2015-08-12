@@ -5,6 +5,8 @@ from base64 import b16encode, b16decode
 
 from django.apps import apps
 from django.core.exceptions import FieldDoesNotExist
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 from .exceptions import B16DecodingFail
 
@@ -46,3 +48,14 @@ def b16_slug_to_arguments(b16_slug):
     except UnicodeDecodeError:
         raise B16DecodingFail("Invalid b16_slug passed")
     return app, model, pk
+
+def get_spammable_or_404(app, model, pk):
+    # Does this view have the is_spammable mixin?
+    if is_spammable(app, model):
+        # convert app/model into the actual model class
+        model_class = apps.get_model(app, model)
+        # So we can call meta for details in the template
+        model_class.meta = model_class._meta
+        instance = get_object_or_404(model_class, pk=pk)
+        return model_class, instance
+    raise Http404
