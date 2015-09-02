@@ -3,6 +3,7 @@ from django.db import models
 
 from spam import Spammable
 
+
 class Data(Spammable, models.Model):
 
     title = models.CharField(max_length=50)

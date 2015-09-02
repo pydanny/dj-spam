@@ -6,6 +6,7 @@ from .exceptions import SpamNotFound
 from .models import SpammyPosting
 from .utils import spammables
 
+
 class SpammyPostingAdmin(admin.ModelAdmin):
     model = SpammyPosting
     readonly_fields = ('source', 'created', 'modified',)

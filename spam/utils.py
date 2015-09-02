@@ -22,12 +22,15 @@ def spammables():
         flaggables.append(model)
     return flaggables
 
+
 def is_spammable(app, model):
     model_class = apps.get_model("{}.{}".format(app, model))
     return model_class in spammables()
 
+
 def get_app_name(model_class_or_instance):
     return model_class_or_instance._meta.app_config.name.split('.')[-1]
+
 
 def b16_slug_to_arguments(b16_slug):
     """
@@ -48,6 +51,7 @@ def b16_slug_to_arguments(b16_slug):
     except UnicodeDecodeError:
         raise B16DecodingFail("Invalid b16_slug passed")
     return app, model, pk
+
 
 def get_spammable_or_404(app, model, pk):
     # Does this view have the is_spammable mixin?
