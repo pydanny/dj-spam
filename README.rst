@@ -8,6 +8,9 @@ Work in Progress: dj-spam
 .. image:: https://travis-ci.org/pydanny/dj-spam.png?branch=master
     :target: https://travis-ci.org/pydanny/dj-spam
 
+.. image:: https://codecov.io/github/pydanny/dj-spam/coverage.svg?branch=master
+    :target: https://codecov.io/github/pydanny/dj-spam?branch=master
+
 Django + Flagging Spam Made Easy
 
 Documentation
