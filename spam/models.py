@@ -23,7 +23,7 @@ class SpammyPosting(models.Model):
     reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='reviewer')
     comment = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+	modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         app_label = 'spam'

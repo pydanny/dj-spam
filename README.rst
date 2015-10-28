@@ -89,3 +89,11 @@ emailing managers
 
 dj-spam emails `settings.MANAGERS` every time something is flagged. If you don't
 set `settings.MANAGERS`, it will email `settings.ADMINS`.
+
+
+Running tests locally
+---------------------
+
+::
+
+    coverage run ./manage.py test

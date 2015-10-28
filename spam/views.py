@@ -77,7 +77,7 @@ class SpammableMixin(object):
         slug = "{app}/{model}/{pk}/".format(
             app = get_app_name(self.object),
             model = self.object._meta.object_name,
-            pk = self.object.pk
+            pk = self.object.title
         )
         # We're just hashing so users won't readily get a sense of how we
         # architected our project
