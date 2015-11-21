@@ -7,6 +7,7 @@ History
 ++++++++++
 
 * Added codecov.io badge
+* Officially supporting Python 3.5
 
 
 0.2.0 (2-15-07-29)
