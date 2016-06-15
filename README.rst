@@ -16,7 +16,7 @@ Django + Flagging Spam Made Easy
 Documentation
 -------------
 
-The full documentation is at https://dj-spam.readthedocs.org.
+The full documentation is at https://dj-spam.readthedocs.io.
 
 Features
 --------
